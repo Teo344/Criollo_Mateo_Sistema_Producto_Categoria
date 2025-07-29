@@ -1,0 +1,26 @@
+:root{
+    --color1:#e7e2f3;
+    --color2:#a7b2e6;
+    --color3:#688cca;
+    --color4:#496d9c;
+    --color5:#2d3c67;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  color: var(--white-color);
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+}
+
+:root {
+  --font-header: "DM Serif Text", serif;
+  --font-body: "Roboto", sans-serif;
+}

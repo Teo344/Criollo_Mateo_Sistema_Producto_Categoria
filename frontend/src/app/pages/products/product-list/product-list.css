@@ -1,0 +1,133 @@
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
+.btn {
+  background-color: #2a85ff;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  margin: 0 0.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
+
+
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    height: auto;
+    gap: 1rem;
+}
+    
+.div1 {
+    grid-column: span 3 / span 3;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;  
+}
+
+.div1 h1{
+  font-family: var(--font-header);
+  font-weight: 400px;
+  font-size: 3rem;
+  font-style: normal;
+  color: var(--color5);
+}
+
+.div2 {
+    grid-column: span 3 / span 3;
+    grid-row: span 4 / span 4;
+    grid-column-start: 1;
+    grid-row-start: 2;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;  
+    margin: 0 auto;
+}
+
+.div3 {
+    grid-column: span 2 / span 2;
+    grid-row: span 5 / span 5;
+    grid-column-start: 4;
+    grid-row-start: 1;
+    
+    background-image: url("/productos.png");
+    background-size: cover;
+    background-position: center;
+    height: auto;
+    width: auto;
+}
+        
+
+/* From Uiverse.io by andrew-demchenk0 */ 
+.button {
+  position: relative;
+  width: 220px;        /* Aumenta el ancho */
+  height: 60px;        /* Aumenta la altura */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: 1px solid #34974d;
+  background-color: #3aa856;
+}
+
+.button, .button__icon, .button__text {
+  transition: all 0.3s;
+}
+
+.button .button__text {
+  transform: translateX(20px);  /* Mueve el texto más lejos */
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;              /* Texto más grande */
+}
+
+.button .button__icon {
+  position: absolute;
+  transform: translateX(180px);  /* Alinea el icono correctamente */
+  height: 100%;
+  width: 40px;
+  background-color: #34974d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button .svg {
+  width: 30px;
+  height: 30px;  /* Opcional, para hacer el ícono más grande */
+  stroke: #fff;
+}
+
+.button:hover {
+  background: #34974d;
+}
+
+.button:hover .button__text {
+  color: transparent;
+}
+
+.button:hover .button__icon {
+  width: 218px;            /* Casi igual que el botón */
+  transform: translateX(0);
+}
+
+.button:active .button__icon {
+  background-color: #2e8644;
+}
+
+.button:active {
+  border: 1px solid #2e8644;
+}

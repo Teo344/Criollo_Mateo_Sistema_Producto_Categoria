@@ -1,0 +1,51 @@
+
+<div class="parent">
+    <div class="div1">
+      <h1>Lista de Productos</h1>
+        <button type="button" routerLink="/products/new" class="button">
+         <span class="button__text">Agregar Producto</span>
+         <span class="button__icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none" class="svg"><line y2="19" y1="5" x2="12" x1="12"></line><line y2="12" y1="12" x2="19" x1="5"></line></svg></span>
+        </button>
+    </div>
+    <div class="div2">
+      <table *ngIf="products.length > 0; else sinProductos">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.name }}</td>
+        <td>${{ product.price }}</td>
+        <td>{{ product.description }}</td>
+        <td>
+
+           <div class="action-buttons">
+            <a
+              [routerLink]="['/products/edit', product.id]"
+              class="btn btn-edit"
+              title="Editar"
+            >✏️</a>
+            <button
+              (click)="deleteProduct(product.id!)"
+              class="btn btn-delete"
+              title="Eliminar"
+            >🗑️</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #sinProductos>
+    <p>No hay productos registrados.</p>
+  </ng-template>
+    </div>
+
+    <div class="div3"></div>
+</div>
+    
