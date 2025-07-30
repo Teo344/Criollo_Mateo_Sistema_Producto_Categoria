@@ -16,7 +16,7 @@ services:
       - spring-network
 
   backend-products:
-    build: ./backend/products
+    image: gabrielmt2004/backend-products:v1
     container_name: backend-products
     ports:
       - "8081:8080"
@@ -32,7 +32,7 @@ services:
       - spring-network
 
   backend-categories:
-    build: ./backend/categories
+    image: gabrielmt2004/backend-categories:v1
     container_name: backend-categories
     ports:
       - "8082:8080"
@@ -48,7 +48,7 @@ services:
       - spring-network
 
   frontend:
-    build: ./frontend
+    image: gabrielmt2004/frontend:v1
     container_name: angular-frontend
     ports:
       - "4200:80"

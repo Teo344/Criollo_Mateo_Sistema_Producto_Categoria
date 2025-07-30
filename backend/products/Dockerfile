@@ -14,12 +14,23 @@ COPY ./src ./src
 
 RUN ./mvnw clean package -DskipTests
 
+# Segunda etapa: imagen final
 FROM openjdk:17-jdk-alpine
 
 WORKDIR /app
+
+# Crear carpeta para logs si es necesario
 RUN mkdir ./logs
+
+# Copiar JAR
 COPY --from=builder /app/target/products-0.0.1-SNAPSHOT.jar .
-#EXPOSE 8081
+
+# Copiar entrypoint y darle permisos
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+# Exponer puerto definido por variable de entorno
 EXPOSE $PORT
 
-ENTRYPOINT ["java", "-jar", "products-0.0.1-SNAPSHOT.jar"]
+# Usar entrypoint que espera la DB
+ENTRYPOINT ["./entrypoint.sh"]
