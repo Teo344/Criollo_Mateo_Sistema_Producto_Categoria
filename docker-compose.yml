@@ -1,56 +1,63 @@
 version: '3.9'
 
 services:
-  db:
+
+  mysql:
     image: mysql:8
     container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: gestion
+      MYSQL_DATABASE: test
     ports:
       - "3307:3306"
     volumes:
-      - db-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     networks:
-      - backend
+      - app-network
 
-  products-service:
+  backend-products:
     build: ./backend/products
-    container_name: spring-products
-    depends_on:
-      - db
+    container_name: backend-products
     ports:
       - "8081:8080"
-    environment:
-      - DB_HOST=mysql-db
-    networks:
-      - backend
-
-  categories-service:
-    build: ./backend/categories
-    container_name: spring-categories
     depends_on:
-      - db
+      - mysql
+    environment:
+      PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: admin123
+    networks:
+      - app-network
+
+  backend-categories:
+    build: ./backend/categories
+    container_name: backend-categories
     ports:
       - "8082:8080"
+    depends_on:
+      - mysql
     environment:
-      - DB_HOST=mysql-db
+      PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: admin123
     networks:
-      - backend
+      - app-network
 
   frontend:
     build: ./frontend
-    container_name: angular-app
+    container_name: angular-frontend
     ports:
       - "4200:80"
     depends_on:
-      - products-service
-      - categories-service
+      - backend-products
+      - backend-categories
     networks:
-      - backend
+      - app-network
 
 volumes:
-  db-data:
-
+  mysql-data:
+  
 networks:
-  backend:
+  app-network:

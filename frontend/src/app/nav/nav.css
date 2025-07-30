@@ -21,6 +21,8 @@ header{
     padding: 1rem 2rem;
     font-family: var(--font-header);
     background-color: var(--color3);
+    position: relative;
+    z-index: 100; 
 }
 
 header h1{
@@ -62,24 +64,56 @@ nav a:hover{
     color: var(--color4);
 }
 
+.menu-toggle {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: var(--color1);
+  cursor: pointer;
+}
+
+nav.open {
+  display: flex !important;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color3);
+  width: 100%;
+  padding: 1rem;
+  z-index: 99;
+}
 
 
 
 @media (max-width: 768px) {
+  header {
+    flex-wrap: wrap;
+  }
 
-    header{
-        padding: 1rem 0.1rem;
+  .menu-toggle {
+    display: block;
+  }
 
-    }
+  nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
 
-    nav{
-        display: none;
-    }
+    nav.open {
+    display: flex !important;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--color3);
+    padding: 1rem;
+    z-index: 99;
+  }
 
-    header h1{
-        font-size: 0.6rem 1.5rem;
-    }
-
-    
-    
+  nav a {
+    font-size: 2.5rem;
+    padding: 0.5rem 0;
+  }
 }

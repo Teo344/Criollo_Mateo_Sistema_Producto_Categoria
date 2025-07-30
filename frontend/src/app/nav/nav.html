@@ -1,9 +1,16 @@
-
 <header>
-    <i class="fa-solid fa-cart-shopping fa-3x" routerLink="/" style="color: #e7e2f3;" ></i>
-    <nav>
-        <a routerLink="/home"  routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
-        <a routerLink="/products" routerLinkActive="activo">Productos</a>
-        <a routerLink="/categories" routerLinkActive="activo">Categorías</a>
-    </nav>
+  <i class="fa-solid fa-cart-shopping fa-3x" routerLink="/" style="color: #e7e2f3;"></i>
+
+
+    <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
+        <i class="fa fa-bars"></i>
+    </button>
+
+
+
+  <nav [ngClass]="{ 'open': menuAbierto }">
+    <a routerLink="/home" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+    <a routerLink="/products" routerLinkActive="activo">Productos</a>
+    <a routerLink="/categories" routerLinkActive="activo">Categorías</a>
+  </nav>
 </header>
