@@ -1,1 +1,36 @@
-<p>category-form works!</p>
+
+<div class="parent">
+<div class="container">
+  <h2>{{ isEdit ? 'Editar' : 'Crear' }} Categoría</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Nombre:</label>
+      <input id="name" type="text" formControlName="name" />
+      <small *ngIf="form.controls['name'].invalid && form.controls['name'].touched">
+        El nombre es obligatorio y debe tener al menos 3 caracteres.
+      </small>
+        <small *ngIf="formErrors['name']" class="error">
+    {{ formErrors['name'] }}
+  </small>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción:</label>
+      <textarea id="description" formControlName="description"></textarea>
+      <small *ngIf="form.controls['description'].invalid && form.controls['description'].touched">
+        Descripción debe ser menor a 225 caracteres.
+      </small>
+      <small *ngIf="formErrors['description']" class="error">
+  {{ formErrors['description'] }}
+</small>
+    </div>
+
+    <button type="submit" [disabled]="form.invalid" class="btn btn-primary">
+      {{ isEdit ? 'Actualizar' : 'Guardar' }}
+    </button>
+
+    <a routerLink="/categories" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+</div>

@@ -8,6 +8,21 @@
         </button>
     </div>
     <div class="div2">
+<div class="search-bar">
+  <div class="search-input">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20">
+      <path fill="currentColor"
+        d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14c-2.49 0-4.5-2.01-4.5-4.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+    </svg>
+    <input
+      type="text"
+      placeholder="Buscar por nombre..."
+      [(ngModel)]="searchName"
+      (input)="filtrarProductos()"
+    />
+  </div>
+</div>
+
       <table *ngIf="products.length > 0; else sinProductos">
     <thead>
       <tr>
@@ -18,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of products">
+      <tr *ngFor="let product of filteredProducts">
         <td>{{ product.name }}</td>
         <td>${{ product.price }}</td>
         <td>{{ product.description }}</td>
@@ -29,12 +44,12 @@
               [routerLink]="['/products/edit', product.id]"
               class="btn btn-edit"
               title="Editar"
-            >✏️</a>
+            ><i class="fa-solid fa-pen-to-square" style="color: #2d3c67;"></i>  </a>
             <button
               (click)="deleteProduct(product.id!)"
               class="btn btn-delete"
               title="Eliminar"
-            >🗑️</button>
+            ><i class="fa-solid fa-trash " style="color: #2d3c67;"></i></button>
           </div>
         </td>
       </tr>

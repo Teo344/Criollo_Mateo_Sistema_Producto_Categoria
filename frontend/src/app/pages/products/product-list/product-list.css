@@ -7,8 +7,29 @@ th, td {
   padding: 0.5rem;
   border: 1px solid #ccc;
 }
+
+th {
+  background-color: var(--color3);
+  text-align: center;
+  color: var(--color1);
+  font-family: var(--font-header);
+  font-weight: 600;
+  font-size: 1.2rem;
+  font-style: normal;
+}
+
+td {
+  text-align: left;
+  color: var(--color5);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.2rem;
+  font-style: normal;
+
+}
+
 .btn {
-  background-color: #2a85ff;
+  background-color: var(--color2);
   color: white;
   padding: 0.3rem 0.6rem;
   margin: 0 0.2rem;
@@ -28,6 +49,7 @@ th, td {
     grid-template-rows: repeat(5, 1fr);
     height: auto;
     gap: 1rem;
+    background-color: var(--color1);
 }
     
 .div1 {
@@ -54,7 +76,7 @@ th, td {
     justify-content: center;
     flex-direction: column;
     align-items: center;  
-    margin: 0 auto;
+    margin: 0 60px;
 }
 
 .div3 {
@@ -74,13 +96,14 @@ th, td {
 /* From Uiverse.io by andrew-demchenk0 */ 
 .button {
   position: relative;
-  width: 220px;        /* Aumenta el ancho */
-  height: 60px;        /* Aumenta la altura */
+  width: 220px;       
+  height: 60px;        
   cursor: pointer;
   display: flex;
   align-items: center;
   border: 1px solid #34974d;
   background-color: #3aa856;
+  font-family: var(--font-body);
 }
 
 .button, .button__icon, .button__text {
@@ -88,15 +111,15 @@ th, td {
 }
 
 .button .button__text {
-  transform: translateX(20px);  /* Mueve el texto más lejos */
+  transform: translateX(20px);  
   color: #fff;
   font-weight: 600;
-  font-size: 18px;              /* Texto más grande */
+  font-size: 18px;            
 }
 
 .button .button__icon {
   position: absolute;
-  transform: translateX(180px);  /* Alinea el icono correctamente */
+  transform: translateX(180px);  
   height: 100%;
   width: 40px;
   background-color: #34974d;
@@ -107,7 +130,7 @@ th, td {
 
 .button .svg {
   width: 30px;
-  height: 30px;  /* Opcional, para hacer el ícono más grande */
+  height: 30px;  
   stroke: #fff;
 }
 
@@ -120,7 +143,7 @@ th, td {
 }
 
 .button:hover .button__icon {
-  width: 218px;            /* Casi igual que el botón */
+  width: 218px;            
   transform: translateX(0);
 }
 
@@ -130,4 +153,64 @@ th, td {
 
 .button:active {
   border: 1px solid #2e8644;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: flex-start;
+  margin: 1rem 0;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: border 0.2s ease-in-out;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-input:focus-within {
+  border-color: #007bff;
+}
+
+.search-icon {
+  margin-right: 0.5rem;
+  color: #888;
+}
+
+.search-input input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  background: transparent;
+}
+
+
+/* Para que en pantallas pequeñas se vea debajo o se oculte */
+@media screen and (max-width: 768px) {
+  .div3 {
+    grid-column: 1 / -1; 
+    grid-row: auto;
+    height: 200px;
+    margin-top: 1rem;
+  }
+  .div1 {
+    grid-column: 1 / -1; 
+    margin: 0 20px; 
+  }
+  .div2 {
+    grid-column: 1 / -1; 
+    margin: 0 20px; 
+  }
+
+  .btn {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
 }

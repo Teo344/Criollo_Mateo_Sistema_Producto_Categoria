@@ -1,6 +1,6 @@
 import { Component , OnInit, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../../services/product';
 import { Product } from '../../../model/product.model';
@@ -18,6 +18,8 @@ export class ProductForm {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private productService = inject(ProductService);
+  formErrors: { [key: string]: string } = {};
+
 
   form!: FormGroup;
   id?: number;
@@ -28,9 +30,9 @@ export class ProductForm {
     this.isEdit = !!this.id;
 
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3),noSoloEspaciosValidator()]],
       price: [0.00, [Validators.required, Validators.min(0.01)]],
-      description: ['']
+      description: ['', [Validators.required,noSoloEspaciosValidator()]]
     });
 
     if (this.isEdit) {
@@ -41,18 +43,35 @@ export class ProductForm {
     }
   }
 
-    onSubmit(): void {
-    if (this.form.invalid) return;
+  
 
-    const product: Product = this.form.value;
+onSubmit(): void {
+  if (this.form.invalid) return;
 
-    const request = this.isEdit
-      ? this.productService.update(this.id!, product)
-      : this.productService.create(product);
+  const product: Product = this.form.value;
 
-    request.subscribe({
-      next: () => this.router.navigate(['/products']),
-      error: () => alert('Error al guardar el producto')
-    });
-  }
+  const request = this.isEdit
+    ? this.productService.update(this.id!, product)
+    : this.productService.create(product);
+
+  request.subscribe({
+    next: () => this.router.navigate(['/products']),
+    error: (errorResponse) => {
+      if (errorResponse.status === 400) {
+        this.formErrors = errorResponse.error;
+      } else {
+        alert('Error inesperado al guardar el producto.');
+      }
+    }
+  });
 }
+
+
+}
+function noSoloEspaciosValidator() {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value || '';
+    return value.trim().length === 0 ? { soloEspacios: true } : null;
+  };
+}
+
