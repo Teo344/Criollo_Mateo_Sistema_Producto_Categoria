@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build -- --configuration production
+RUN npm run build -- --configuration=production
 
 # Etapa 2: Servidor Nginx
 FROM nginx:alpine
@@ -12,5 +12,6 @@ COPY --from=builder /app/dist/frontend/browser /usr/share/nginx/html
 
 #Usa este archivo para definir cómo responder a las peticiones que lleguen al servidor.
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
 
 #CMD ["nginx", "-g", "daemon off;"]

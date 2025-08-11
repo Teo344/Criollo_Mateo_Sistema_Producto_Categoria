@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: angular-frontend
+    env: docker
+    dockerfilePath: ./frontend/Dockerfile
+
+  - type: web
+    name: products-api
+    env: docker
+    dockerfilePath: ./backend/products/Dockerfile
+    envVars:
+      - key: PORT
+        value: 8081
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://app-mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: app-mysql
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: app-mysql
+          property: password
+
+  - type: web
+    name: categories-api
+    env: docker
+    dockerfilePath: ./backend/categories/Dockerfile
+    envVars:
+      - key: PORT
+        value: 8082
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://app-mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: app-mysql
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: app-mysql
+          property: password
+
+databases:
+  - name: app-mysql
+    databaseName: app
