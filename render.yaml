@@ -31,7 +31,7 @@ services:
     rootDir: backend/categories
     plan: starter
     region: oregon
-    autoDeployTrigger: true
+    autoDeploy: true
     envVars:
       - key: PORT
         value: 10000
@@ -55,7 +55,7 @@ services:
     rootDir: backend/products
     plan: starter
     region: oregon
-    autoDeployTrigger: true
+    autoDeploy: true
     envVars:
       - key: PORT
         value: 10000
