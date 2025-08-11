@@ -1,45 +1,84 @@
+# render.yaml — Despliegue completo en Render
 services:
-  - type: web
-    name: angular-frontend
-    env: docker
-    dockerfilePath: ./frontend/Dockerfile
-
-  - type: web
-    name: products-api
-    env: docker
-    dockerfilePath: ./backend/products/Dockerfile
+  # 1) Base de datos MySQL como Private Service (con disco persistente)
+  - type: pserv
+    name: mysql-db
+    runtime: image
+    image:
+      url: docker.io/library/mysql:8
+    plan: starter
+    region: oregon
     envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        sync: false         # Render te pedirá el valor al aplicar el Blueprint
+      - key: MYSQL_DATABASE
+        value: appdb
+      - key: MYSQL_USER
+        value: appuser
+      - key: MYSQL_PASSWORD
+        sync: false         # pon la misma o diferente que root, como prefieras
       - key: PORT
-        value: 8081
-      - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://app-mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: app-mysql
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: app-mysql
-          property: password
+        value: 3306
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
 
+  # 2) Backend: Categories (Docker en subcarpeta)
   - type: web
     name: categories-api
-    env: docker
-    dockerfilePath: ./backend/categories/Dockerfile
+    runtime: docker
+    rootDir: backend/categories
+    plan: starter
+    region: oregon
+    autoDeployTrigger: true
     envVars:
       - key: PORT
-        value: 8082
-      - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://app-mysql:3306/app?useSSL=false&allowPublicKeyRetrieval=true
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: app-mysql
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: app-mysql
-          property: password
+        value: 10000
+      - key: DB_HOST
+        value: mysql-db         # nombre del pserv, accede por red interna
+      - key: DB_DATABASE
+        value: appdb
+      - key: DB_USER
+        value: appuser
+      - key: DB_PASSWORD
+        sync: false
+      # Spring Boot suele necesitar esto en prod si usas MySQL 8
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+    healthCheckPath: /api/categories/health
 
-databases:
-  - name: app-mysql
-    databaseName: app
+  # 3) Backend: Products (Docker en subcarpeta)
+  - type: web
+    name: products-api
+    runtime: docker
+    rootDir: backend/products
+    plan: starter
+    region: oregon
+    autoDeployTrigger: true
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        value: mysql-db
+      - key: DB_DATABASE
+        value: appdb
+      - key: DB_USER
+        value: appuser
+      - key: DB_PASSWORD
+        sync: false
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+    healthCheckPath: /api/products/health
+
+  # 4) Frontend Angular como Static Site (sin Nginx)
+  - type: web
+    name: productos-categorias-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build -- --configuration production
+    publishPath: dist/frontend/browser
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=600
