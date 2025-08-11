@@ -1,89 +1,50 @@
-# render.yaml — Despliegue completo en Render
 services:
-  # 1) Base de datos MySQL como Private Service (con disco persistente)
-  - type: pserv
-    name: mysql-db
-    runtime: image
-    image:
-      url: docker.io/library/mysql:8
-    plan: starter
-    region: oregon
-    envVars:
-      - key: MYSQL_ROOT_PASSWORD
-        sync: false         # Render te pedirá el valor al aplicar el Blueprint
-      - key: MYSQL_DATABASE
-        value: appdb
-      - key: MYSQL_USER
-        value: appuser
-      - key: MYSQL_PASSWORD
-        sync: false         # pon la misma o diferente que root, como prefieras
-      - key: PORT
-        value: 3306
-    disk:
-      name: mysql-data
-      mountPath: /var/lib/mysql
-      sizeGB: 10
-
-  # 2) Backend: Categories (Docker en subcarpeta)
   - type: web
-    name: categories-api
-    runtime: docker
-    rootDir: backend/categories
-    plan: starter
+    name: angular-frontend
+    env: docker
+    plan: free
     region: oregon
-    autoDeploy: true
-    envVars:
-      - key: PORT
-        value: 10000
-      - key: DB_HOST
-        value: mysql-db         # nombre del pserv, accede por red interna
-      - key: DB_DATABASE
-        value: appdb
-      - key: DB_USER
-        value: appuser
-      - key: DB_PASSWORD
-        sync: false
-      # Spring Boot suele necesitar esto en prod si usas MySQL 8
-      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
-        value: update
-    healthCheckPath: /api/categories/health
+    rootDir: frontend
+    dockerfilePath: frontend/Dockerfile
 
-  # 3) Backend: Products (Docker en subcarpeta)
   - type: web
     name: products-api
-    runtime: docker
-    rootDir: backend/products
-    plan: starter
+    env: docker
+    plan: free
     region: oregon
-    autoDeploy: true
+    rootDir: backend/products
+    dockerfilePath: backend/products/Dockerfile
     envVars:
       - key: PORT
-        value: 10000
-      - key: DB_HOST
-        value: mysql-db
-      - key: DB_DATABASE
-        value: appdb
-      - key: DB_USER
-        value: appuser
-      - key: DB_PASSWORD
-        sync: false
+        value: 8081
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://<HOST_EXTERNO>:3306/<DB>?sslMode=REQUIRED
+      - key: SPRING_DATASOURCE_USERNAME
+        value: <USER>
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: <PASS>
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
-    healthCheckPath: /api/products/health
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.MySQLDialect
 
-# 4) Frontend Angular con Nginx (Docker)
   - type: web
-    name: productos-categorias-frontend
-    runtime: docker
-    rootDir: frontend
-    plan: starter
-    region: oregon   # o virginia, pero usa la misma en todos
+    name: categories-api
+    env: docker
+    plan: free
+    region: oregon
+    rootDir: backend/categories
+    dockerfilePath: backend/categories/Dockerfile
     envVars:
       - key: PORT
-        value: "10000"
-      # Después del primer deploy, reemplaza estos dos con los dominios reales:
-      - key: PRODUCTS_API_URL
-        value: https://products-api.onrender.com
-      - key: CATEGORIES_API_URL
-        value: https://categories-api.onrender.com
-
+        value: 8082
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://<HOST_EXTERNO>:3306/<DB>?sslMode=REQUIRED
+      - key: SPRING_DATASOURCE_USERNAME
+        value: <USER>
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: <PASS>
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.MySQLDialect
