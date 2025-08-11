@@ -71,15 +71,15 @@ services:
         value: update
     healthCheckPath: /api/products/health
 
-# 4) Frontend Angular como Static Site
-- type: static_site
-  name: productos-categorias-frontend
-  rootDir: frontend
-  buildCommand: npm ci && npm run build -- --configuration production
-  publishPath: dist/frontend/browser
-  headers:
-    - path: /*
-      name: Cache-Control
-      value: public, max-age=600
-  region: oregon   # o virginia, pero usa la misma que los demás
+  # 4) Frontend Angular como Static Site
+  - type: static_site
+    name: productos-categorias-frontend
+    rootDir: frontend
+    buildCommand: npm ci && npm run build -- --configuration production
+    publishPath: dist/frontend/browser
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=600
+    region: oregon   # o virginia, pero usa la misma que los demás
 
