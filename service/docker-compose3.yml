@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: test
+      # Opcional: fija collation/charset si lo necesitas
+      # MYSQL_INITDB_SKIP_TZINFO: "1"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-padmin123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    # IMPORTANTE: NO expongas MySQL hacia afuera
+    # ports:
+    #   - "3307:3306"
+
+  backend-products:
+    image: gabrielmt2004/backend-products:v1
+    container_name: backend-products
+    environment:
+      PORT: 8080
+      DB_HOST: mysql          # usa el nombre del servicio, no container_name
+      DB_DATABASE: test
+      DB_USER: root
+      DB_PASSWORD: admin123
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-net
+    restart: unless-stopped
+    # NO expongas públicamente
+    # ports:
+    #   - "8081:8080"
+
+  backend-categories:
+    image: gabrielmt2004/backend-categories:v1
+    container_name: backend-categories
+    environment:
+      PORT: 8080
+      DB_HOST: mysql
+      DB_DATABASE: test
+      DB_USER: root
+      DB_PASSWORD: admin123
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-net
+    restart: unless-stopped
+    # NO expongas públicamente
+    # ports:
+    #   - "8082:8080"
+
+  frontend:
+    image: gabrielmt2004/img-frontend-servicio:v13
+    container_name: angular-frontend
+    depends_on:
+      - backend-products
+      - backend-categories
+    networks:
+      - app-net
+    restart: unless-stopped
+    ports:
+      - "80:80"   # único puerto público
+
+
+volumes:
+  mysql-data:
+
+networks:
+  app-net:
+    driver: bridge
