@@ -160,6 +160,118 @@ Y este docker-compose2 para poder utilizar las imágenes del docker Hub, **sin n
 ```bash
 docker-compose -f docker-compose2.yml up 
 ```
+## 🚀Preparación del Servicio en AWS
+En está nueva versión del programa para poder desplegar en un servicio web como lo es AWS. Se debió tomar nuevas consideraciones al momento de realizarlas.
+
+### Creación de la instancia para AWS
+El servicio elegido fue AWS, en la cual se creó la instancia con estas especificaciones:
+
+![Instancia](img/instancia.png)
+
+
+Donde también denotamos que se creó un servidor de Ubuntu y que también nosotros especificamos los puertos de acceso para que pueda salir y comunicarse con el exterior.
+
+![Instancia](img/puertos.png)
+
+También, para evitar que al momento de detener la instancia, por temas de económicos, se cambié la ip del servicio; entonces se creó una ip elástica que siempre se mantiene a pesar de que se detenga o cualquier otro problema, está es: **3.150.44.172**
+
+Y por ultimó para poder acceder mediante Git Bash y poder cargar correctamente el docker-compose se tiene presente el archivo **gabriel21.pem** para acceder y hacer los cambios pertinentes.
+
+### Modificación del frontend
+Debidó a que el frontend se conectaba con localhost, al momento de llevarlo a AWS; ocurre una pérdida de comunincación con los servicios del backend, porque este funciona con la ip correspondiente, para ello se modificó el **enviroment.ts** del frontend para que se direccione correctamente:
+```ts
+export const environment = {
+  production: false,
+  apiUrlProducts: '/api/products',
+  apiUrlCategories: '/api/categories'
+};
+```
+
+De igual forma, hubó problemas con el servidor de Ngnix; porque al establecer las diferentes rutas, el proxy nos causa problemas por temas de CORS y permisos para el navegagor, por ende se modificó el mismo agregando lo siguiente:
+```conf
+# === PRODUCTS ===
+# SIN barra final (exacto): /api/products
+location = /api/products {
+  proxy_pass http://backend-products:8080/api/products;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+}
+
+# CON barra final y subrutas: /api/products/...
+location /api/products/ {
+  proxy_pass http://backend-products:8080/api/products/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+}
+
+# === CATEGORIES ===
+location = /api/categories {
+  proxy_pass http://backend-categories:8080/api/categories;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+}
+
+location /api/categories/ {
+  proxy_pass http://backend-categories:8080/api/categories/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+}
+```
+Con este ultimó cambio realizado al frontend; entonces se decidió en crear una nueva imagen en docker-hub para evitar convenientes y que sea de fácil acceso, si desea acceder se realiza mediante lo siguiente:
+
+🔗 [gabrielmt2004/img-frontend-servicio:v13](https://hub.docker.com/repository/docker/gabrielmt2004/img-frontend-servicio/general)
+
+
+Y por ultimó, se creo un nuevo archivo compose 🔗 [docker-compose3.yml](https://github.com/Teo344/Criollo_Mateo_Sistema_Producto_Categoria/blob/main/service/docker-compose3.yml).
+Este nuevo docker compose cambió el hecho de exponer los puertos publicamente, sino que ahora unicamente existe el puerto 8080; para la conexión con el frontend y el frontend es el único que se accede con un puerto publico **80:80**
+
+### Creación del servicio.
+Primeramente tanto el archivo **docker-compose3.yml** y el **gabriel21.pem** se coloca dentro de una carpeta para un mejor manejo. para este caso la carpeta se llamara **Service**.
+Luego utilizamos un git bash para poder acceder y controlar la instancia correspondiente
+
+```bash
+cd /c/Users/MSI/Desktop/Service
+```
+
+Ya dentro de la carpeta, entonces se conectó a la instancia mediante la ip elástica que hemos mencionado:
+
+```bash
+ssh -i gabriel21.pem ubuntu@3.150.44.172
+```
+
+Entonces al ingresar en la instancia y poder cargar el docker-compose3.yml dentro de la misma descargamos el entorno de docker:
+
+```bash
+sudo apt update
+sudo apt install -y docker.io docker-compose
+sudo systemctl enable docker --now
+sudo usermod -aG docker ubuntu
+```
+
+Salimos de esta para refrescar la instancia.
+
+```bash
+exit
+```
+Y antes de volver a entrar a la instancia, ahora subimos el docker-compose3 dentro de la misma para poder levantar todos los contenedores de esta forma:
+```bash
+scp -i gabriel21.pem docker-compose3.yml ubuntu@3.150.44.172:~
+```
+Y al entrar nuevamente, ahora realizamos y utilizamos el docker-compose3:
+```bash
+docker-compose -f docker-compose3.yml up 
+```
+
+# Acceso al Servicio
+
+Luego de esperar a que todos los contenedores se creen. Entonces ahora accedemos mediante el siguiente link para poder visulizar todo el proyecto:
+
+
+🔗 [3.150.44.172/home](http://3.150.44.172/home)
+
+
+
+
 ![Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Spring_Framework_Logo_2018.svg/1200px-Spring_Framework_Logo_2018.svg.png)
 
 
