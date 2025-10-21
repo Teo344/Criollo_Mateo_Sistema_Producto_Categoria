@@ -7,7 +7,7 @@ Mateo Criollo - 30/07/2025 - NRC: 2366
 ## Documentación
 Este nuevo proyecto, basado en los servicios de **Products** y **Categories**, busca implementar un sistema completo con Frontend, Backend y Base de Datos, utilizando una arquitectura orientada a la simulación de **microservicios**. Cada componente se ejecuta de forma independiente en su propio contenedor Docker, lo que permite una mayor escalabilidad, mantenimiento y despliegue modular.
 
-El objetivo principal es demostrar cómo diferentes servicios pueden interactuar de manera eficiente en un entorno desacoplado, haciendo uso de herramientas modernas como Angular 19 para el frontend, Spring Boot para los microservicios REST y MySQL como base de datos relacional, todo orquestado a través de Docker Compose.
+El objetivo principal es demostrar cómo diferentes servicios pueden interactuar de manera eficiente en un entorno desacoplado, haciendo uso de herramientas modernas como Angular 19 para el frontend, Spring Boot para los microservicios REST y MySQL como base de datos relacional, todo orquestado a través de Docker Compose generado.
 ## Tecnologías Utilizadas
 
 - 🧩 Java 17 
